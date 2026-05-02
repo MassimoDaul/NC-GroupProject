@@ -54,7 +54,8 @@ function gradW_cubic(rvec)
     end
 
     return dWdr * (rvec / r)
-end```
+end
+```
 
 The biggest difference I noticed was that the cubic spline kernel produced smoother particle motion. The fluid looked less noisy overall, especially in regions where particles were interacting heavily. The pressure forces also seemed slightly more stable, with fewer sudden spikes in movement.
 
