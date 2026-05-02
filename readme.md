@@ -19,7 +19,7 @@ We tried changing a few of the main parameters:
 - increasing the smoothing length (h / radius for neighborhood search) made the simulation smoother overall because each particle interacts with more neighbors. But the downside is that the fluid loses some detail and looks more blurry.
 
 
-  **2) Using a Cubic Spline Kernal**
+**2) Using a Cubic Spline Kernal**
 
 We tried replacing the original poly6 kernel combination with a cubic spline kernel and reran the simulation to compare the behavior. We used this:
 
@@ -57,10 +57,15 @@ function gradW_cubic(rvec)
 end
 ```
 
-The biggest difference I noticed was that the cubic spline kernel produced smoother particle motion. The fluid looked less noisy overall, especially in regions where particles were interacting heavily. The pressure forces also seemed slightly more stable, with fewer sudden spikes in movement.
+We thought that the cubic spline kernel produced smoother particle motion. The fluid looked less noisy overall and there weren't really any spikes in the movement.  Simulation also looked more blurry compared to the original kernel. 
 
-However, the simulation also looked a bit more “blurred” compared to the original kernel. Fine details in the fluid motion were less sharp, which makes sense since the cubic spline spreads interactions more gradually across neighbors.
 
-In terms of stability, the cubic spline kernel felt slightly more forgiving. The simulation didn’t break as quickly when parameters like dt or k were increased, suggesting that the smoother gradients help reduce numerical instability.
+**3) Adding More Particles**
 
-Overall, switching kernels changed the balance between detail and stability. The original kernels gave sharper structure but more noise, while the cubic spline produced smoother and more stable behavior at the cost of some detail.
+We changed the initial grid to use:
+```
+for x in dx:dx:0.6
+    for y in dx:dx:0.8
+```
+
+With more particles, the fluid looked fuller and the motion had more detail. The dam break also covered more of the domain because there was simply more fluid at the beginning. It was cooler in general. The main downside was performance, which is a little obvious. It just took way longer to run. 
