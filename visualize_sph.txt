@@ -1,0 +1,106 @@
+###############################################################################
+# SPH CSV VISUALIZER
+#
+# This script reads CSV files produced by sph_simulation_full.jl and animates
+# the particle positions with GLMakie.
+#
+# Expected CSV format:
+#   each row = one particle
+#   column 1 = x position
+#   column 2 = y position
+#
+# Example filenames:
+#   output/sph_000000.csv
+#   output/sph_000010.csv
+#   output/sph_000020.csv
+###############################################################################
+
+using GLMakie
+using CSV
+using DataFrames
+
+# -----------------------------
+# Settings
+# -----------------------------
+
+const output_dir = "output"
+const pause_time = 0.001
+
+# -----------------------------
+# Helper: extract frame number
+# -----------------------------
+
+function frame_number(file)
+    m = match(r"sph_(\d+)\.csv$", basename(file))
+
+    if m === nothing
+        error("Bad filename format: $file")
+    end
+
+    return parse(Int, m.captures[1])
+end
+
+# -----------------------------
+# Load frame files
+# -----------------------------
+
+files = sort(
+    filter(f -> endswith(f, ".csv"), readdir(output_dir; join=true));
+    by = frame_number
+)
+
+isempty(files) && error("No CSV files found in $output_dir. Run the simulation first.")
+
+println("Found $(length(files)) frames.")
+println("First frame: $(files[1])")
+println("Last frame:  $(files[end])")
+
+# -----------------------------
+# Read first frame
+# -----------------------------
+
+df = CSV.read(files[1], DataFrame; header=false)
+rename!(df, [:x, :y])
+
+xs = Observable(df.x)
+ys = Observable(df.y)
+
+# -----------------------------
+# Create figure
+# -----------------------------
+
+fig = Figure(size=(700, 700))
+ax = Axis(
+    fig[1, 1],
+    limits=(0, 1, 0, 1),
+    xlabel="x",
+    ylabel="y",
+    title="SPH Corner Dam-Break Simulation"
+)
+
+scatter!(ax, xs, ys; markersize=14, color=:blue, alpha=0.65)
+
+display(fig)
+
+# -----------------------------
+# Animation loop
+# -----------------------------
+
+println("Animating. Close the Makie window or interrupt Julia to stop.")
+
+while true
+    for file in files
+        df = CSV.read(file, DataFrame; header=false)
+        rename!(df, [:x, :y])
+
+        if nrow(df) == 0
+            continue
+        end
+
+        xs[] = df.x
+        ys[] = df.y
+
+        sleep(pause_time)
+        yield()
+    end
+end
