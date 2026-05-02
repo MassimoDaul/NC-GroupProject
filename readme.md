@@ -6,7 +6,7 @@ We built the initial simulation using Julia and an llm to help us debug and work
 
 Our responses to the reflection questions are here:
 
-1) Changing Initial Parameters
+**1) Changing Initial Parameters**
 
 We tried changing a few of the main parameters:
 
