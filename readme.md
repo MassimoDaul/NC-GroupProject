@@ -76,6 +76,6 @@ When we switched from the (more efficient) spatial hashing approach to the (less
 
 **5) Changing Integration Scheme**
 
-Finally, when we switched from the Euler integration scheme to the Euler-Cromer integration scheme, we noticed that short-time behavior was quite similar while long-time behavior was different. The Euler-Cromer scheme was more stable for longer time intervals, and we can easily explain this if we think of the scheme as a matrix equation. 
+Finally, when we switched from the Euler-Cromer integration scheme to the Euler integration scheme, we noticed that short-time behavior was quite similar while long-time behavior was different. The Euler-Cromer scheme was more stable for longer time intervals, and we can easily explain this if we think of the scheme as a matrix equation. 
 
 In the Euler scheme, the eigenvalues of the update matrix are bigger than 1 (in magnitude); in the Euler-Cromer scheme, the eigenvalues are exactly 1 (in magnitude), which explains why it is more stable for longer time intervals. 
